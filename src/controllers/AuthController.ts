@@ -1,25 +1,26 @@
 import { Request, Response } from "express";
 import { AuthService } from "../service/AuthService";
-import jwt from "jsonwebtoken";
-import { generateTokens } from "../utils/jsonwebtoken";
+import { verifyRefreshToken ,generateTokens } from "../utils/jsonwebtoken";
 
 const authService = new AuthService();
 
 export class AuthController {
-  async login(req: Request, res: Response) {
-    try {
-      const result = await authService.login(req.body);
-      return res.status(200).json(result);
-    } catch (error: any) {
-      console.error("Erro no login:", error);
-      return res.status(400).json({ message: error.message });
-    }
-  }
-
   async loginCompanyById(req: Request, res: Response) {
     try {
       const result = await authService.loginCompany(req.body);
-      return res.status(200).json(result);
+
+      res.cookie("refreshToken", result.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return res.status(200).json({
+        success: true,
+        accessToken: result.accessToken,
+        company: result.company,
+      });
     } catch (error: any) {
       const status = error.message === "Senha incorreta." ? 401 : 400;
       return res.status(status).json({
@@ -30,27 +31,29 @@ export class AuthController {
   }
 
   static async refresh(req: Request, res: Response) {
+    const token = req.cookies.refreshToken;
+
+    if (!token) {
+      return res.status(400).json({ success: false, message: "Refresh token ausente." });
+    }
+
     try {
-      const { refreshToken } = req.body;
+      const decoded = verifyRefreshToken(token);
+      if (!decoded) throw new Error("Refresh token inválido.");
 
-      if (!refreshToken) {
-        return res.status(400).json({ success: false, message: "Refresh token ausente." });
-      }
+      const newtokens = generateTokens({ id: decoded.id, name: decoded.name, companyId: decoded.companyId });
 
-      // Verifica o refresh token
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!);
-
-      if (!decoded || typeof decoded !== "object") {
-        return res.status(401).json({ success: false, message: "Refresh token inválido." });
-      }
-
-      // Gera novos tokens com base no payload original
-      const newTokens = generateTokens({ id: decoded.id });
+      res.cookie("refreshToken", newtokens.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
       return res.status(200).json({
         success: true,
         message: "Tokens atualizados com sucesso!",
-        ...newTokens,
+        acessToken: newtokens.accessToken,
       });
     } catch (error) {
       console.error("Erro ao atualizar token:", error);

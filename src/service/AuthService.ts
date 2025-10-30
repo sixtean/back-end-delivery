@@ -3,7 +3,7 @@ import { User } from "../models/User";
 import { Company } from "../models/Company";
 import {  LoginDTO } from "../DTOs/authDTO";
 import bcrypt from "bcrypt";
-import { generateTokens } from "../utils/jsonwebtoken";
+import { generateTokens, refreshTokens } from "../utils/jsonwebtoken";
 
 export class AuthService {
   private userRepository = Connection.getRepository(User);
@@ -22,9 +22,15 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) throw new Error("Senha incorreta.");
 
-    const token = generateTokens({id: user.id })
+    const tokens = generateTokens({id: user.id, name: user.name, companyId })
 
-    return { success: true, message: "Login realizado com sucesso!", user, token };
+    return {
+      success: true,
+      message: "Login realizado com sucesso!",
+      user,
+      acessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
   }
 
   async loginCompany({ id, password }: { id: number; password: string }) {
@@ -37,7 +43,7 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, company.password);
     if (!isPasswordValid) throw { status: 401, message: "Senha incorreta." };
 
-    const token = generateTokens({ id: company.id })
+    const tokens = generateTokens({ id: company.id, name: company.name })
 
     return {
       success: true,
@@ -45,7 +51,8 @@ export class AuthService {
       company: {
         name: company?.name,
       },
-     ...token,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken
     };
   }
 }

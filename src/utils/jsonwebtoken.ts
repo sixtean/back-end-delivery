@@ -35,19 +35,21 @@ export function verifyRefreshToken(token: string): JwtPayload | null {
   }
 }
 
-export function refreshAccessToken(refreshToken: string): string | null {
-  try {
-    const decoded = verifyRefreshToken(refreshToken);
-    if (!decoded) return null;
+export function refreshTokens(refreshToken: string): { accessToken: string; refreshToken?: string} | null {
+  const decoded = verifyRefreshToken(refreshToken);
+  if (!decoded) return null;
 
-    const newAccessToken = jwt.sign(
-      { id: decoded.id, name: decoded.name, companyId: decoded.companyId },
-      ACCESS_TOKEN_SECRET,
-      { expiresIn: ACCESS_TOKEN_EXPIRATION }
-    );
+  const newAccessToken = jwt.sign(
+    { id: decoded.id, name: decoded.name, companyId: decoded.companyId },
+    ACCESS_TOKEN_SECRET,
+    { expiresIn: ACCESS_TOKEN_EXPIRATION }
+  );
 
-    return newAccessToken;
-  } catch {
-    return null;
-  }
+  const newRefreshToken = jwt.sign(
+    { id: decoded.id, name: decoded.name, companyId: decoded.companyId },
+    REFRESH_TOKEN_SECRET,
+    { expiresIn: REFRESH_TOKEN_EXPIRATION }
+  );
+
+  return { accessToken: newAccessToken, refreshToken: newRefreshToken };
 }
