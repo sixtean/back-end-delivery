@@ -5,6 +5,6 @@ const authRouter = Router();
 const authController = new AuthController();
 
 authRouter.post("/login-company", (req, res) => authController.loginCompanyById(req, res));
-authRouter.post("/refresh", AuthController.refresh);
+authRouter.post("/refresh", authController.refresh);
 
-export default authRouter
+export default authRouter;

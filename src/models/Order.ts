@@ -7,29 +7,29 @@ import { Payment } from "./Payment";
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => Company, company => company.orders, { onDelete: 'CASCADE' })
-  company: Company;
+  company!: Company;
 
   @ManyToOne(() => User, user => user.orders, { onDelete: 'CASCADE' })
-  user: User;
+  user!: User;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  total: number;
+  total!: number;
 
   @Column({ type: 'enum', enum: ['pending','preparing','delivering','completed','canceled'], default: 'pending' })
-  status: string;
+  status!: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   @OneToMany(() => OrderItem, item => item.order)
-  items: OrderItem[];
+  items!: OrderItem[];
 
   @OneToMany(() => Payment, payment => payment.order)
-  payments: Payment[];
+  payments!: Payment[];
 }

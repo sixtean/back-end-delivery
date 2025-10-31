@@ -4,32 +4,32 @@ import { User } from "./User";
 @Entity()
 export class Address {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => User, user => user.addresses, { onDelete: 'CASCADE' })
-  user: User;
+  user!: User;
 
   @Column({ length: 150 })
-  street: string;
+  street!: string;
 
   @Column({ length: 20 })
-  number: string;
+  number!: string;
 
   @Column({ length: 100 })
-  district: string;
+  district!: string;
 
   @Column({ length: 100 })
-  city: string;
+  city!: string;
 
   @Column({ length: 50 })
-  state: string;
+  state!: string;
 
   @Column({ length: 20 })
-  zip_code: string;
+  zip_code!: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 }

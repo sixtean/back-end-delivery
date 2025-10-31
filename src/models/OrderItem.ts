@@ -5,17 +5,17 @@ import { Product } from "./Product";
 @Entity()
 export class OrderItem {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => Order, order => order.items, { onDelete: 'CASCADE' })
-  order: Order;
+  order!: Order;
 
   @ManyToOne(() => Product)
-  product: Product;
+  product!: Product;
 
   @Column()
-  quantity: number;
+  quantity!: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price: number;
+  price!: number;
 }

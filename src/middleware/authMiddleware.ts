@@ -1,36 +1,39 @@
 import { Request, Response, NextFunction } from "express"; 
-import { verifyAccessToken } from "../utils/jsonwebtoken";
+import { Token } from "../utils/jsonwebtoken";
 
 export interface AuthRequest extends Request {
     user?: any;
 }
 
-export function authenticateToken(req: AuthRequest, res: Response, next: NextFunction) {
-    try {
-        const accessToken =
-            req.cookies.accessToken ||
-            req.headers.authorization?.split(' ')[1];
+export class AuthMiddleware {
+    public authenticateToken(req: AuthRequest, res: Response, next: NextFunction) {
+        const tokenInstance = new Token();
+        try {
+            const accessToken =
+                req.cookies.accessToken ||
+                req.headers.authorization?.split(' ')[1];
 
-        if (!accessToken) {
-            return res.status(401).json({
-                success: false,
-                message: 'Token de acesso não fornecido'
-            });
-        }
+            if (!accessToken) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Token de acesso não fornecido'
+                });
+            }
 
-        const decoded = verifyAccessToken(accessToken);
-        if(!decoded) {
+            const decoded = tokenInstance.verifyAccessToken(accessToken);
+            if(!decoded) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Token de acesso inválido ou expirado'
+                });
+            }
+            req.user = decoded;
+            next();
+        } catch (error) {
             return res.status(403).json({
                 success: false,
-                message: 'Token de acesso inválido ou expirado'
+                message: 'Token inválido'
             });
         }
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(403).json({
-            success: false,
-            message: 'Token inválido'
-        });
     }
 }

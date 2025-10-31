@@ -3,13 +3,13 @@ import { User } from "../models/User";
 import { Company } from "../models/Company";
 import {  LoginDTO } from "../DTOs/authDTO";
 import bcrypt from "bcrypt";
-import { generateTokens, refreshTokens } from "../utils/jsonwebtoken";
+import { Token } from "../utils/jsonwebtoken";
 
 export class AuthService {
   private userRepository = Connection.getRepository(User);
-  
+  private tokenService = new Token();
 
-  async login({ name, password, companyId }: LoginDTO) {
+  public async login({ name, password, companyId }: LoginDTO) {
     const user = await this.userRepository.findOne({
       where: { name },
       relations: ["company"],
@@ -22,7 +22,7 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) throw new Error("Senha incorreta.");
 
-    const tokens = generateTokens({id: user.id, name: user.name, companyId })
+    const tokens = await this.tokenService.generateTokens({id: user.id, name: user.name, companyId })
 
     return {
       success: true,
@@ -33,7 +33,7 @@ export class AuthService {
     };
   }
 
-  async loginCompany({ id, password }: { id: number; password: string }) {
+  public async loginCompany({ id, password }: { id: number; password: string }) {
     const companyRepository = Connection.getRepository(Company);
 
     const company = await companyRepository.findOne({ where: { id }, relations: ["users"] });
@@ -43,7 +43,7 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, company.password);
     if (!isPasswordValid) throw { status: 401, message: "Senha incorreta." };
 
-    const tokens = generateTokens({ id: company.id, name: company.name })
+    const tokens = await this.tokenService.generateTokens({ id: company.id, name: company.name });
 
     return {
       success: true,

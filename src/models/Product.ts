@@ -4,26 +4,26 @@ import { Company } from "./Company";
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => Company, company => company.products, { onDelete: 'CASCADE' })
-  company: Company;
+  company!: Company;
 
   @Column({ length: 100 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string;
+  description!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price: number;
+  price!: number;
 
   @Column({ type: 'int', default: 0 })
-  stock: number;
+  stock!: number;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 }
