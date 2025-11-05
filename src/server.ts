@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 
 import authRouter from './routes/auth.routes';
 import companyRouter from './routes/company.routes';
+import ClientRouter from './routes/client.routes';
 
 dotenv.config();
 
@@ -15,14 +16,15 @@ const PORT = process.env.SERVER_PORT || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
-}));
+    app.use(cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    }));
 
 
 app.use("/auth", authRouter);
 app.use("/company", companyRouter);
+app.use("/client", ClientRouter);
 
 Connection.initialize()
     .then(() => {
