@@ -1,0 +1,66 @@
+import 'reflect-metadata';
+import express from 'express';
+import cors from 'cors'
+import { Connection } from './data/Data-Source';
+import { Category } from './models/Category';
+import cookieParser from 'cookie-parser';
+import * as dotenv from 'dotenv';
+import path from 'path';
+
+import authRouter from './routes/auth.routes';
+import companyRouter from './routes/company.routes';
+import ClientRouter from './routes/client.routes';
+import categoryRoutes from './routes/category.routes';
+import customRouter from './routes/custom.routes';
+import configRouter from './routes/config.routes';
+
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.SERVER_PORT || 3000;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+    app.use(cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
+
+app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
+app.use("/logo", express.static(path.join(__dirname, "./logo")));
+app.use("/auth", authRouter);
+app.use("/company", companyRouter);
+app.use("/client", ClientRouter);
+app.use("/categories", categoryRoutes);
+app.use("/custom", customRouter);
+app.use("/config", configRouter);
+
+Connection.initialize()
+    .then(async () => {
+        console.log('✅ Banco de dados conectado com sucesso!');
+
+        const categoryRepo = Connection.getRepository(Category);
+        const defaults =  [
+            {name: "Principal", description: "Categoria dos principais produtos" },
+            {name: "Destaque", description: "Categoria de produtos destaques" },
+        ]
+
+        for (const cat of defaults) {
+            const exists = await categoryRepo.findOne({ where: { name: cat.name} });
+            if(!exists) {
+                await categoryRepo.save(categoryRepo.create(cat));
+                console.log(`✔ Categoria criada automaticamente: ${cat.name}`)
+            }
+        }
+
+        app.listen(PORT, () => {
+            console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.clear();
+        console.error('❌ Erro ao conectar ao banco de dados:', error);
+    });
