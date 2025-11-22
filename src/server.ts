@@ -40,8 +40,6 @@ app.use("/config", configRouter);
 
 Connection.initialize()
     .then(async () => {
-        console.log('✅ Banco de dados conectado com sucesso!');
-
         const categoryRepo = Connection.getRepository(Category);
         const defaults =  [
             {name: "Principal", description: "Categoria dos principais produtos" },
@@ -52,7 +50,6 @@ Connection.initialize()
             const exists = await categoryRepo.findOne({ where: { name: cat.name} });
             if(!exists) {
                 await categoryRepo.save(categoryRepo.create(cat));
-                console.log(`✔ Categoria criada automaticamente: ${cat.name}`)
             }
         }
 
