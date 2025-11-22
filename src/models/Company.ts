@@ -14,6 +14,9 @@ export class Company {
 
     @Column({ length: 100 })
     password!: string;
+
+    @Column({ type: "int", default: 5 })
+    billing_day!: number;
     
     @CreateDateColumn()
     created_at!: Date;
