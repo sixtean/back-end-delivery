@@ -22,7 +22,8 @@ const PORT = process.env.SERVER_PORT || 3000;
 
 const allowedOrigins = [
     'https://courageous-meerkat-bd62bc.netlify.app/',
-    'https://meuoutrofrontend.com'
+    'https://meuoutrofrontend.com',
+    'http://localhost:5173'
 ];
 
 app.use(express.json());
