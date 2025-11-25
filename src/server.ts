@@ -20,10 +20,24 @@ dotenv.config();
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
 
+const allowedOrigins = [
+    'https://courageous-meerkat-bd62bc.netlify.app/',
+    'https://meuoutrofrontend.com'
+];
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
     app.use(cors({
+        origin: function(origin, callback) {
+            if (!origin) return callback(null, true);
+        
+            if (allowedOrigins.includes(origin)) {
+              callback(null, true);
+            } else {
+              callback(new Error('Não permitido pelo CORS'));
+            }
+        },
         credentials: true,
     })
 );
