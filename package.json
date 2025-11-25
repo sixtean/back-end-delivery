@@ -27,6 +27,8 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "seed": "ts-node-dev --respawn --transpile-only src/speed.ts",
     "reset": "ts-node-dev --respawn --transpile-only src/reset.ts"

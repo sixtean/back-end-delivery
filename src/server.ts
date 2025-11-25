@@ -23,21 +23,21 @@ const PORT = process.env.SERVER_PORT || 3000;
 const allowedOrigins = [
     'https://courageous-meerkat-bd62bc.netlify.app/',
     'https://meuoutrofrontend.com',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'http://localhost:5174',
 ];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
     app.use(cors({
-        origin: function(origin, callback) {
-            if (!origin) return callback(null, true);
-        
-            if (allowedOrigins.includes(origin)) {
-              callback(null, true);
-            } else {
-              callback(new Error('Não permitido pelo CORS'));
+        origin: function(origin, callback){
+            if(!origin) return callback(null, true);
+            if(allowedOrigins.indexOf(origin) === -1){
+                const msg = 'A política CORS impede esta origem';
+                return callback(new Error(msg), false);
             }
+            return callback(null, true);
         },
         credentials: true,
     })
@@ -46,9 +46,6 @@ app.use(cookieParser());
 app.use("/zoryon", ZoryonRouter);
 
 
-
-app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
-app.use("/logo", express.static(path.join(__dirname, "./logo")));
 app.use("/auth", authRouter);
 app.use("/company", companyRouter);
 app.use("/client", ClientRouter);
