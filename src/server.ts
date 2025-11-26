@@ -22,7 +22,7 @@ const PORT = process.env.SERVER_PORT || 3000;
 
 const allowedOrigins = [
     'https://rainbow-nasturtium-dffabf.netlify.app',
-    'http://zoryonwipe.com',
+    'https://zoryonwipe.com',
     'http://localhost:5173',
     'http://localhost:5174',
 ];
