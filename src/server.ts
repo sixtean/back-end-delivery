@@ -70,9 +70,7 @@ Connection.initialize()
         }
 
         app.listen(PORT, () => {
-            console.log(`🚀 Servidor rodando em https://zoryonwipe.online:${PORT}`);
-            console.log("🔥 Versão 5. Servidor atualizado!");
-
+            console.log(`🚀 Servidor rodando em https://zoryonwipe.online`);
         });
     })
     .catch((error) => {

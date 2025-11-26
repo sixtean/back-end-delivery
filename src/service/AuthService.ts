@@ -7,7 +7,6 @@ export class AuthService {
   private companyRepository = Connection.getRepository(Company);
   private tokenService = new Token();
 
-  // login da empresa
   public async loginCompany({ id, password }: { id: number; password: string }) {
     const company = await this.companyRepository.findOne({
       where: { id },

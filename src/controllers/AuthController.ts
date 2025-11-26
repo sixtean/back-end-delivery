@@ -9,7 +9,6 @@ export class AuthController {
     try {
       const result = await authService.loginCompany(req.body);
 
-
       res.cookie("accessToken", result.accessToken, {
         httpOnly: true,
         sameSite: "lax",

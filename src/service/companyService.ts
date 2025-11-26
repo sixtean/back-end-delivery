@@ -1,4 +1,4 @@
-import { isDataURI } from "class-validator";
+import bcrypt from 'bcrypt';
 import { Connection } from "../data/Data-Source";
 import { Company } from "../models/Company";
 
@@ -48,9 +48,11 @@ export const CompanyService = {
             throw new Error('dia de cobrança invalido, o dia deve ser 5 ou 20.');
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const newCompany = repo.create({
             name,
-            password,
+            password: hashedPassword,
             billing_day,
         });
 
