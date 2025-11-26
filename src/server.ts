@@ -30,7 +30,8 @@ const allowedOrigins = [
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-    app.use(cors({
+app.use(
+    cors({
         origin: function(origin, callback){
             if(!origin) return callback(null, true);
             if(allowedOrigins.indexOf(origin) === -1){
@@ -69,7 +70,9 @@ Connection.initialize()
         }
 
         app.listen(PORT, () => {
-            console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+            console.log(`🚀 Servidor rodando em https://zoryonwipe.online:${PORT}`);
+            console.log("🔥 Versão 5. Servidor atualizado!");
+
         });
     })
     .catch((error) => {
