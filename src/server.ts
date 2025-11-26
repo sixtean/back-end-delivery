@@ -21,8 +21,8 @@ const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
 
 const allowedOrigins = [
-    'https://rainbow-nasturtium-dffabf.netlify.app/',
-    'https://dulcet-fairy-f75529.netlify.app/',
+    'https://rainbow-nasturtium-dffabf.netlify.app',
+    'https://dulcet-fairy-f75529.netlify.app',
     'http://localhost:5173',
     'http://localhost:5174',
 ];
