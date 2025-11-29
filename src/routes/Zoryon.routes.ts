@@ -3,10 +3,11 @@ import { companyController } from "../controllers/companyController";
 import { StatusMysqlController } from "../controllers/StatusMysqlController";
 
 const ZoryonRouter = Router();
+const StatusMysql = new StatusMysqlController();
 
 ZoryonRouter.get("/", companyController.listAll);
 ZoryonRouter.post("/", companyController.create);
 ZoryonRouter.delete("/:id", companyController.delete);
-ZoryonRouter.get('/status', new StatusMysqlController().status);
+ZoryonRouter.get('/status', StatusMysql.status);
 
 export default ZoryonRouter;
