@@ -21,9 +21,10 @@ import ZoryonRouter from './routes/Zoryon.routes';
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
 
-const allowedOrigins = [
+const allowedOrigins: string[] = [
     'https://rainbow-nasturtium-dffabf.netlify.app',
     'https://zoryonwipe.com',
+    'https://zoryonwipe.online',
     'http://localhost:5173',
     'http://localhost:5174',
 ];
@@ -31,19 +32,25 @@ const allowedOrigins = [
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-    cors({
-        origin: function(origin, callback){
-            if(!origin) return callback(null, true);
-            if(allowedOrigins.indexOf(origin) === -1){
-                const msg = 'A política CORS impede esta origem';
-                return callback(new Error(msg), false);
-            }
-            return callback(null, true);
-        },
-        credentials: true,
-    })
-);
+
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+
+    if (origin && allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
+
+    
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+
+    next();
+});
 
 app.use("/zoryon", ZoryonRouter);
 

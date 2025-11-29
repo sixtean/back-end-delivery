@@ -12,9 +12,7 @@ export class statusMysqlController {
             const dbStatus = await StatusMysql.getStatus();
 
             return res.status(200).json({
-                queryes: dbStatus.queries_per_second,
-                connections: dbStatus.connections_active,
-                uptime: dbStatus.uptime_seconds,
+                ...dbStatus,
                 ping_ms: ping
             });
 
