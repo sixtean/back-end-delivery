@@ -1,11 +1,12 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors'
 import { Connection } from './data/Data-Source';
 import { Category } from './models/Category';
 import cookieParser from 'cookie-parser';
-import * as dotenv from 'dotenv';
-import path from 'path';
 
 import authRouter from './routes/auth.routes';
 import companyRouter from './routes/company.routes';
@@ -13,9 +14,9 @@ import ClientRouter from './routes/client.routes';
 import categoryRoutes from './routes/category.routes';
 import customRouter from './routes/custom.routes';
 import configRouter from './routes/config.routes';
-import ZoryonRouter from './routes/Zoryon.routes';
+import paymentRouter from './routes/payment.route';
 
-dotenv.config();
+import ZoryonRouter from './routes/Zoryon.routes';
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
@@ -53,6 +54,7 @@ app.use("/client", ClientRouter);
 app.use("/categories", categoryRoutes);
 app.use("/custom", customRouter);
 app.use("/config", configRouter);
+app.use("/payment", paymentRouter);
 
 Connection.initialize()
     .then(async () => {

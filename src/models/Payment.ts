@@ -18,6 +18,9 @@ export class Payment {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   total!: number;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  provider_id!: string | null;
+
   @CreateDateColumn()
   created_at!: Date;
 
