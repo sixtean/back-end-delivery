@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { StatusMysql } from "../service/StatusMysqlService";
 import { Connection } from "../data/Data-Source";
 export class StatusMysqlController {
-    status = async ( res: Response ) => {
+    async status( req: Request, res: Response ) {
         try{
             const start = Date.now();
             await Connection.query("SELECT 1");

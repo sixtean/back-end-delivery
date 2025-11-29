@@ -8,6 +8,6 @@ const StatusMysql = new StatusMysqlController();
 ZoryonRouter.get("/", companyController.listAll);
 ZoryonRouter.post("/", companyController.create);
 ZoryonRouter.delete("/:id", companyController.delete);
-ZoryonRouter.get('/status', StatusMysql.status);
+ZoryonRouter.get('/status', (req, res) => StatusMysql.status(req, res));
 
 export default ZoryonRouter;
