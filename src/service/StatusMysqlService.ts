@@ -19,9 +19,9 @@ export class StatusMysql {
                 `SHOW GLOBAL STATUS LIKE 'Uptime'`
             );
 
-            const connectionsActive = Number(connections[0]?.Value || 0);
-            const totalQuestions = Number(qpsQueries?.[0]?.Value || 0);
-            const totalUptime = Number(uptime?.[0]?.Value || 1);
+            const connectionsActive = Number(connections[0]?.Value ?? 0);
+            const totalQuestions = Number(qpsQueries?.[0]?.Value ?? 0);
+            const totalUptime = Number(uptime?.[0]?.Value ?? 1);
 
             const queriesPerSecond = Math.round(totalQuestions / totalUptime);
 
